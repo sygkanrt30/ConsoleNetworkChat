@@ -8,11 +8,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Server {
     private final int port;
-    private List<ClientHandler> clients;
+    private final List<ClientHandler> clients;
 
     public Server(int port) {
         this.port = port;
         clients = new CopyOnWriteArrayList<>();
+    }
+
+    public List<ClientHandler> getClients() {
+        return clients;
     }
 
     public void start() {
@@ -22,7 +26,6 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 subscribe(new ClientHandler(socket, this));
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
