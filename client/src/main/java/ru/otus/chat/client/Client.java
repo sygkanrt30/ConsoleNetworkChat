@@ -26,6 +26,14 @@ public class Client {
                         if (message.equalsIgnoreCase("/exitDone")) {
                             break;
                         }
+                        if (message.startsWith("/authDone ")) {
+                            System.out.println("Удалось успешно войти в чат с именем пользователя "
+                                    + message.split(" ")[1]);
+                        }
+                        if (message.startsWith("/regDone ")) {
+                            System.out.println("Удалось успешно зарегистрироваться с именем пользователя "
+                                    + message.split(" ")[1]);
+                        }
                     } else {
                         System.out.println(message);
                     }
