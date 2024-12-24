@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientHandler {
     private final Socket socket;
@@ -23,13 +24,14 @@ public class ClientHandler {
         new Thread(() -> {
             try {
                 System.out.println("Клиент подключился " + socket.getPort());
-
                 while (true) {
                     String message = in.readUTF();
                     if (message.startsWith("/")) {
                         if (message.equalsIgnoreCase("/exit")) {
-                            sendMsg("/exitok");
+                            sendMsg("/exitDone");
                             break;
+                        } else if (message.startsWith("/w")) {
+                            privateMessage(message);
                         }
                     } else {
                         server.broadcastMessage(username + " : " + message);
@@ -52,6 +54,15 @@ public class ClientHandler {
             out.writeUTF(message);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    public void privateMessage(String message) throws IOException {
+        String[] partsOfMessage = message.split(" ", 3);
+        List<ClientHandler> clients = server.getClients();
+        for (ClientHandler client : clients) {
+            if (client.getUsername().equals(partsOfMessage[1]) || client.equals(this)) {
+                client.out.writeUTF(username + " : " + partsOfMessage[2]);
+            }
         }
     }
 
