@@ -7,7 +7,7 @@ public class ClientApp {
         try {
             new Client();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("ОТСУТСТВУЕТ СОЕДИНЕНИЕ С СЕРВЕРОМ!!!");
         }
     }
 }

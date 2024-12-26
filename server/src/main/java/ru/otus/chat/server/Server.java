@@ -40,7 +40,6 @@ public class Server {
 
     public void unsubscribe(ClientHandler clientHandler) {
         clients.remove(clientHandler);
-        broadcastMessage("Из чата вышел: " + clientHandler.getUsername());
     }
 
     public void broadcastMessage(String message) {
