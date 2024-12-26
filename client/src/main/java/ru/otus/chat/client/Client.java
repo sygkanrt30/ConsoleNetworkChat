@@ -2,6 +2,7 @@ package ru.otus.chat.client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
@@ -26,20 +27,26 @@ public class Client {
                         if (message.equalsIgnoreCase("/exitDone")) {
                             break;
                         }
-                        if (message.startsWith("/authDone ")) {
+                        if (message.startsWith("/authDone")) {
+                            String[] partOfMessage = message.split(" ");
                             System.out.println("Удалось успешно войти в чат с именем пользователя "
-                                    + message.split(" ")[1]);
+                                    + partOfMessage[1] + "\nСтатус пользователя: " + partOfMessage[2]);
                         }
-                        if (message.startsWith("/regDone ")) {
+                        if (message.startsWith("/regDone")) {
                             System.out.println("Удалось успешно зарегистрироваться с именем пользователя "
-                                    + message.split(" ")[1]);
+                                    + message.split(" ")[1] + "\nСтатус пользователя: " + message.split(" ")[2]);
+                        }
+                        if (message.startsWith("/kickDone")) {
+                            System.out.println("Администратор исключил вас из чата");
                         }
                     } else {
                         System.out.println(message);
                     }
                 }
+            } catch (EOFException e) {
+                System.err.println("Соединение с сервером было закрыто!");
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Разорвано соединение с сервером!!!");
             } finally {
                 disconnect();
             }
@@ -52,9 +59,10 @@ public class Client {
                 break;
             }
         }
+        disconnect();
     }
 
-    public void disconnect() {
+    private void disconnect() {
         try {
             if (in != null) {
                 in.close();
